@@ -1,0 +1,235 @@
+/* Tổng thể */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6ea8fe, #a7d8ff);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Khung form */
+.form-container {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.desc {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Form */
+form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+}
+
+.btnPrimary {
+  width: 100%;
+  background: #3b82f6;
+  color: white;
+  padding: 12px;
+  margin-top: 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnPrimary:hover {
+  background: #1d4ed8;
+}
+
+.btnBack {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btnBack:hover {
+  color: #1d4ed8;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 15px;
+  }
+  form label {
+    font-size: 14px;
+  }
+  form input,
+  form select {
+    font-size: 14px;
+  }
+}
+/* 🌟 Tổng thể */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6ea8fe, #a7d8ff);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 30px 20px 15px;
+  color: #fff;
+}
+
+header h1 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 8px 0 20px;
+}
+
+/* Thanh tìm kiếm + nút */
+.top-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#searchInput {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  width: 250px;
+  font-size: 15px;
+  outline: none;
+}
+
+.btnPrimary {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.25s;
+}
+.btnPrimary:hover {
+  background: #1d4ed8;
+}
+
+/* 📋 Grid danh sách người */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  flex: 1;
+}
+
+/* 👤 Thẻ người */
+.person-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.person-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.person-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 3px solid #2563eb;
+}
+
+.person-card .info h3 {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.person-card .info p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.btnDetail {
+  display: inline-block;
+  margin-top: 8px;
+  background: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.25s;
+}
+.btnDetail:hover {
+  background: #1e40af;
+}
+
+/* Không có kết quả */
+.empty {
+  text-align: center;
+  color: #333;
+  font-size: 16px;
+  grid-column: 1/-1;
+}
+
+/*  Footer */
+footer {
+  text-align: center;
+  padding: 15px;
+  color: #eee;
+  font-size: 13px;
+}

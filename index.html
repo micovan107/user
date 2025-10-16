@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tra cứu thông tin mọi người</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>🧑‍🤝‍🧑 Tra Cứu Thông Tin Mọi Người</h1>
+    <p class="subtitle">Một nơi để mọi người chia sẻ thông tin cá nhân công khai</p>
+    <div class="top-actions">
+      <input type="text" id="searchInput" placeholder="🔍 Tìm theo tên, tình trạng, trường học...">
+      <a href="add.html" class="btnPrimary">+ Đăng thông tin</a>
+    </div>
+  </header>
+
+  <!-- Danh sách người -->
+  <main>
+    <div id="peopleList" class="card-grid"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 - Website tra cứu thông tin cộng đồng | Made with ❤️</p>
+  </footer>
+
+  <!-- Firebase & Script -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="config.js"></script>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const peopleList = document.getElementById('peopleList');
+    let allPeople = [];
+
+    // Tải danh sách
+    firebase.database().ref('people').on('value', snapshot => {
+      allPeople = [];
+      peopleList.innerHTML = "";
+      snapshot.forEach(child => {
+        const id = child.key;
+        const data = child.val();
+        allPeople.push({id, ...data});
+      });
+      renderPeople(allPeople);
+    });
+
+    // Hàm hiển thị
+    function renderPeople(list){
+      peopleList.innerHTML = "";
+      if(list.length === 0){
+        peopleList.innerHTML = "<p class='empty'>😕 Không có ai trong danh sách</p>";
+        return;
+      }
+      list.forEach(person => {
+        const card = document.createElement('div');
+        card.className = "person-card";
+        card.innerHTML = `
+          <img src="${person.avatar || 'https://placehold.co/150x150?text=No+Avatar'}" alt="avatar">
+          <div class="info">
+            <h3>${person.name || 'Chưa rõ tên'}</h3>
+            <p>💬 ${person.relationship || 'Chưa rõ tình trạng'}</p>
+            <p>🏫 ${person.school || person.level || 'Chưa rõ nơi học/làm'}</p>
+            <a href="person.html?id=${person.id}" class="btnDetail">Xem chi tiết</a>
+          </div>
+        `;
+        peopleList.appendChild(card);
+      });
+    }
+
+    // Tìm kiếm
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase().trim();
+      const filtered = allPeople.filter(p => 
+        (p.name && p.name.toLowerCase().includes(keyword)) ||
+        (p.relationship && p.relationship.toLowerCase().includes(keyword)) ||
+        (p.school && p.school.toLowerCase().includes(keyword)) ||
+        (p.level && p.level.toLowerCase().includes(keyword))
+      );
+      renderPeople(filtered);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thông tin cá nhân</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #fff;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.8s ease;
+    }
+    .card img {
+      width: 140px; height: 140px; object-fit: cover; border-radius: 50%;
+      border: 4px solid #fff; margin-bottom: 15px; transition: transform 0.3s;
+    }
+    .card img:hover { transform: scale(1.05); }
+    h2 { font-size: 24px; margin-bottom: 10px; }
+    p { font-size: 16px; margin: 6px 0; }
+    b { color: #ffd86b; }
+    .info-section {
+      margin-top: 15px; text-align: left;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px; border-radius: 12px;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      background: #ffd86b;
+      color: #333;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover { background: #ffeaa7; }
+    .edit-form {
+      margin-top: 15px;
+      text-align: left;
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .edit-form input, .edit-form textarea, .edit-form select {
+      width: 100%;
+      margin: 6px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+    }
+    .edit-form label { font-weight: 600; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="personInfo">
+    <p>Đang tải thông tin...</p>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="config.js"></script>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const dbRef = firebase.database().ref('people/' + id);
+
+    dbRef.once('value').then(snapshot => {
+      const data = snapshot.val();
+      const card = document.getElementById('personInfo');
+
+      if (!data) {
+        card.innerHTML = "<p>❌ Không tìm thấy người này!</p>";
+        return;
+      }
+
+      card.innerHTML = `
+        <img src="${data.avatar || 'https://placehold.co/200'}" alt="Avatar">
+        <h2>${data.name || 'Người dùng ẩn danh'}</h2>
+        <div class="info-section">
+          <p><b>🎂 Ngày sinh:</b> ${data.dob || 'Chưa rõ'}</p>
+          <p><b>📞 SĐT:</b> ${data.phone || 'Không có'}</p>
+          <p><b>💑 Tình trạng:</b> ${data.relationship || 'Chưa rõ'}</p>
+          <p><b>🏫 Trường/Nơi làm việc:</b> ${data.school || 'Chưa rõ'}</p>
+          <p><b>🧠 Năng lực:</b> ${data.skills || 'Không có'}</p>
+          <p><b>😨 Nỗi sợ:</b> ${data.fears || 'Không có'}</p>
+          <p><b>🎯 Sở thích:</b> ${data.interests || 'Không có'}</p>
+          <p><b>📜 Tiểu sử:</b> ${data.bio || 'Chưa có'}</p>
+        </div>
+        <a href="index.html" class="btn">⬅ Quay lại trang chủ</a>
+        <button class="btn" onclick="toggleEdit()">✍️ Sửa thông tin</button>
+
+        <div class="edit-form" id="editForm">
+          <label>Họ tên</label>
+          <input id="editName" type="text" value="${data.name || ''}">
+
+          <label>Ngày sinh</label>
+          <input id="editDob" type="date" value="${data.dob || ''}">
+
+          <label>Số điện thoại</label>
+          <input id="editPhone" type="text" value="${data.phone || ''}">
+
+          <label>Tình trạng</label>
+          <select id="editRelationship">
+            <option ${data.relationship === 'Độc thân' ? 'selected' : ''}>Độc thân</option>
+            <option ${data.relationship === 'Có người yêu' ? 'selected' : ''}>Có người yêu</option>
+            <option ${data.relationship === 'Trong mối quan hệ' ? 'selected' : ''}>Trong mối quan hệ</option>
+          </select>
+
+          <label>Trường/Nơi làm việc</label>
+          <input id="editSchool" type="text" value="${data.school || ''}">
+
+          <label>Năng lực</label>
+          <input id="editSkills" type="text" value="${data.skills || ''}">
+
+          <label>Nỗi sợ</label>
+          <input id="editFears" type="text" value="${data.fears || ''}">
+
+          <label>Sở thích</label>
+          <input id="editInterests" type="text" value="${data.interests || ''}">
+
+          <label>Tiểu sử</label>
+          <textarea id="editBio" rows="3">${data.bio || ''}</textarea>
+
+          <button class="btn" style="margin-top:10px" onclick="saveEdit()">💾 Lưu</button>
+        </div>
+      `;
+    });
+
+    function toggleEdit() {
+      const form = document.getElementById('editForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function saveEdit() {
+      const updatedData = {
+        name: document.getElementById('editName').value,
+        dob: document.getElementById('editDob').value,
+        phone: document.getElementById('editPhone').value,
+        relationship: document.getElementById('editRelationship').value,
+        school: document.getElementById('editSchool').value,
+        skills: document.getElementById('editSkills').value,
+        fears: document.getElementById('editFears').value,
+        interests: document.getElementById('editInterests').value,
+        bio: document.getElementById('editBio').value
+      };
+
+      firebase.database().ref('people/' + id).update(updatedData).then(() => {
+        alert('✅ Cập nhật thành công!');
+        location.reload();
+      });
+    }
+  </script>
+</body>
+</html>

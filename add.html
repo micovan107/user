@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Đăng thông tin người dùng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h1>📝 Đăng thông tin của bạn</h1>
+    <p class="desc">Thông tin bạn nhập sẽ hiển thị công khai trên trang chủ để mọi người có thể tra cứu.</p>
+
+    <form id="addForm">
+      <label for="name">Họ và tên *</label>
+      <input type="text" id="name" placeholder="VD: Nguyễn Văn A" required>
+
+      <label for="dob">Ngày sinh</label>
+      <input type="date" id="dob">
+
+      <label for="relationship">Tình trạng tình cảm</label>
+      <select id="relationship">
+        <option value="">-- Chọn --</option>
+        <option>Độc thân</option>
+        <option>Có người yêu</option>
+        <option>Đã kết hôn</option>
+        <option>Khó nói 😶</option>
+      </select>
+
+      <label for="level">Cấp học / nghề nghiệp</label>
+      <select id="level">
+        <option value="">-- Chọn --</option>
+        <option>Tiểu học</option>
+        <option>THCS</option>
+        <option>THPT</option>
+        <option>Đại học</option>
+        <option>Lao động</option>
+        <option>Khác</option>
+      </select>
+
+      <label for="studyPower">Học lực (nếu còn đi học)</label>
+      <select id="studyPower">
+        <option value="">-- Chọn --</option>
+        <option>Yếu</option>
+        <option>Trung bình</option>
+        <option>Khá</option>
+        <option>Giỏi</option>
+        <option>Xuất sắc</option>
+      </select>
+
+      <label for="school">Trường học / Nơi làm việc</label>
+      <input type="text" id="school" placeholder="VD: THPT Nguyễn Trãi">
+
+      <label for="address">Nơi ở hiện tại</label>
+      <input type="text" id="address" placeholder="VD: Hà Nội, Việt Nam">
+
+      <label for="phone">Số điện thoại</label>
+      <input type="text" id="phone" placeholder="VD: 0123 456 789">
+
+      <label for="skills">Năng lực học / nghề nghiệp</label>
+      <input type="text" id="skills" placeholder="VD: Giỏi Toán, lập trình, ...">
+
+      <label for="fears">Nỗi sợ</label>
+      <input type="text" id="fears" placeholder="VD: Bóng tối, độ cao, ...">
+
+      <label for="interests">Sở thích</label>
+      <input type="text" id="interests" placeholder="VD: Chơi game, đọc sách, ...">
+
+      <label for="avatar">Ảnh đại diện</label>
+      <input type="file" id="avatar">
+
+      <button type="submit" class="btnPrimary">Đăng thông tin ✅</button>
+    </form>
+
+    <p style="text-align:center;margin-top:20px;">
+      <a href="index.html" class="btnBack">⬅ Quay lại trang chủ</a>
+    </p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+  <script src="config.js"></script>
+  <script>
+    const form = document.getElementById('addForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let avatarUrl = "";
+      const file = document.getElementById('avatar').files[0];
+      if(file){
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+        const res = await axios.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, formData);
+        avatarUrl = res.data.secure_url;
+      }
+
+      const data = {
+        name: document.getElementById('name').value,
+        dob: document.getElementById('dob').value,
+        relationship: document.getElementById('relationship').value,
+        level: document.getElementById('level').value,
+        studyPower: document.getElementById('studyPower').value,
+        school: document.getElementById('school').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        skills: document.getElementById('skills').value,
+        fears: document.getElementById('fears').value,
+        interests: document.getElementById('interests').value,
+        avatar: avatarUrl
+      };
+
+      const ref = firebase.database().ref('people').push();
+      await ref.set(data);
+
+      alert('✅ Thêm thông tin thành công!');
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
