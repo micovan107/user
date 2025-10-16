@@ -178,16 +178,13 @@
       });
     }
   </script>
-  <script>
-  // ==== GHI ĐÈ URL LẦN ĐẦU TIÊN (fix đổi link mỗi lần reload) ====
-  (function fixPrettyUrlOnce() {
-    const path = window.location.pathname;
-    const parts = path.split('/').filter(Boolean);
-    const last = decodeURIComponent(parts[parts.length - 1] || '');
-    const qs = new URLSearchParams(window.location.search);
-    const id = qs.get('id');
+<script>
+  (function fixPrettyUrlWithHash() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (!id) return;
 
-    // Hàm tạo slug từ tên
+    // Hàm tạo slug từ tên (dùng khi đã tải dữ liệu và biết tên user)
     function slugify(str) {
       return str
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -198,17 +195,25 @@
         .replace(/-+/g, '-');
     }
 
-    // Nếu có id và last chưa phải slug thì mới đổi URL
-    if (id && last !== slugify(document.title)) {
-      const basePath = path.replace(/\/[^/]*$/, '');
+    // Lấy slug từ hash hiện có (nếu có)
+    const currentHash = location.hash.replace('#', '');
+
+    // Khi đã có title (tức là đã render user)
+    const observer = new MutationObserver(() => {
       const slug = slugify(document.title);
-      const newUrl = basePath + '/' + encodeURIComponent(slug);
-      history.replaceState(null, '', newUrl);
-    }
+      if (slug && currentHash !== slug) {
+        history.replaceState(null, '', location.pathname + location.search + '#' + slug);
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.querySelector('title'), { childList: true });
   })();
 </script>
 
+
 </body>
 </html>
+
 
 
