@@ -178,6 +178,37 @@
       });
     }
   </script>
+  <script>
+  // ==== GHI ĐÈ URL LẦN ĐẦU TIÊN (fix đổi link mỗi lần reload) ====
+  (function fixPrettyUrlOnce() {
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(Boolean);
+    const last = decodeURIComponent(parts[parts.length - 1] || '');
+    const qs = new URLSearchParams(window.location.search);
+    const id = qs.get('id');
+
+    // Hàm tạo slug từ tên
+    function slugify(str) {
+      return str
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    // Nếu có id và last chưa phải slug thì mới đổi URL
+    if (id && last !== slugify(document.title)) {
+      const basePath = path.replace(/\/[^/]*$/, '');
+      const slug = slugify(document.title);
+      const newUrl = basePath + '/' + encodeURIComponent(slug);
+      history.replaceState(null, '', newUrl);
+    }
+  })();
+</script>
+
 </body>
 </html>
+
 
