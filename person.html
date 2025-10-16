@@ -179,41 +179,47 @@
     }
   </script>
 <script>
-  (function fixPrettyUrlWithHash() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (!id) return;
+// ==== GHI ĐÈ URL, KHÔNG CHO setPrettyUrl CHẠY LẠI ====
 
-    // Hàm tạo slug từ tên (dùng khi đã tải dữ liệu và biết tên user)
-    function slugify(str) {
-      return str
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
+// Ghi đè tạm thời hàm setPrettyUrl cũ để nó không làm gì
+window.setPrettyUrl = function() {
+  // không làm gì hết để tránh đổi link
+};
+
+// Khi title đổi (người dùng được load), mình sẽ gắn slug vào hash
+(function fixPrettyUrlWithHash() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) return;
+
+  // Hàm tạo slug
+  function slugify(str) {
+    return str
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
+  // Theo dõi thay đổi title
+  const observer = new MutationObserver(() => {
+    const slug = slugify(document.title);
+    if (slug && location.hash !== '#' + slug) {
+      history.replaceState(null, '', location.pathname + location.search + '#' + slug);
     }
+  });
 
-    // Lấy slug từ hash hiện có (nếu có)
-    const currentHash = location.hash.replace('#', '');
-
-    // Khi đã có title (tức là đã render user)
-    const observer = new MutationObserver(() => {
-      const slug = slugify(document.title);
-      if (slug && currentHash !== slug) {
-        history.replaceState(null, '', location.pathname + location.search + '#' + slug);
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.querySelector('title'), { childList: true });
-  })();
+  observer.observe(document.querySelector('title'), { childList: true });
+})();
 </script>
+
 
 
 </body>
 </html>
+
 
 
 
