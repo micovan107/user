@@ -72,6 +72,8 @@
       <label for="bio">Tiểu sử</label>
 <textarea id="bio" rows="3" placeholder="Nhập tiểu sử của bạn (tùy chọn)..."></textarea>
 
+<label for="lockPassword">🔐 Mật khẩu khóa (nếu muốn bảo mật)</label>
+<input type="password" id="lockPassword" placeholder="Bỏ trống nếu không khóa">
 
       <label for="avatar">Ảnh đại diện</label>
       <input type="file" id="avatar">
@@ -116,6 +118,8 @@
         fears: document.getElementById('fears').value,
          webnet: document.getElementById('webnet').value,
         interests: document.getElementById('interests').value,
+        lockPassword: document.getElementById('lockPassword').value || null,
+
         avatar: avatarUrl
       };
 
