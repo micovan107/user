@@ -5,65 +5,239 @@
   <title>Tra cứu thông tin mọi người</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css">
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  }
+
+  header {
+    text-align: center;
+    padding: 20px 10px;
+    background: #4f46e5;
+    color: white;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+  }
+
+  header .subtitle {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+
+  .top-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #searchInput {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    width: 250px;
+    max-width: 90%;
+    font-size: 0.95rem;
+  }
+
+  .btnPrimary {
+    background: #fff;
+    color: #4f46e5;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .btnPrimary:hover {
+    background: #e0e7ff;
+  }
+
+  main {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 10px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* ✅ PC 5 cột */
+    gap: 20px;
+  }
+
+  .person-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: 0.2s;
+    text-align: center;
+  }
+
+  .person-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .person-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 3px solid #4f46e5;
+    transition: transform 0.25s;
+  }
+
+  .person-card img:hover {
+    transform: scale(1.05);
+  }
+
+  .person-card .info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .person-card .info p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  .btnDetail {
+    display: inline-block;
+    margin-top: 8px;
+    background: #4f46e5;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .btnDetail:hover {
+    background: #4338ca;
+  }
+
+  .empty {
+    text-align: center;
+    color: #6b7280;
+    grid-column: 1/-1;
+    font-size: 1rem;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 20px 10px;
+    color: #6b7280;
+  }
+
+  /* 📱 Responsive */
+  @media (max-width: 1024px) {
+    .card-grid {
+      grid-template-columns: repeat(3, 1fr); /* Tablet */
+    }
+  }
+
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 1.4rem;
+    }
+    #searchInput {
+      width: 90%;
+    }
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr); /* Mobile */
+      gap: 15px;
+    }
+    .person-card img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .card-grid {
+      grid-template-columns: 1fr; /* màn rất nhỏ */
+    }
+  }
+</style>
+
 </head>
 <body>
   
   <header>
-    <h1> Tra Cứu Thông Tin Mọi Người</h1>
+    <h1>Tra Cứu Thông Tin Mọi Người</h1>
     <p class="subtitle">Một nơi để mọi người chia sẻ thông tin cá nhân công khai</p>
     <div class="top-actions">
-      <input type="text" id="searchInput" placeholder="🔍 Tìm theo tên, tình trạng, trường học...">
+      <input type="text" id="searchInput" placeholder="🔍 Tìm theo tên, ngày sinh...">
       <a href="add.html" class="btnPrimary">+ Đăng thông tin</a>
     </div>
   </header>
 
-  <!-- Danh sách người -->
   <main>
     <div id="peopleList" class="card-grid"></div>
   </main>
 
-  <!-- Footer -->
   <footer>
     <p>© 2025 - Website tra cứu thông tin cộng đồng</p>
   </footer>
 
-  <!-- Firebase & Script -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="config.js"></script>
+
   <script>
     const searchInput = document.getElementById('searchInput');
     const peopleList = document.getElementById('peopleList');
     let allPeople = [];
 
-    // Tải danh sách
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
     firebase.database().ref('people').on('value', snapshot => {
       allPeople = [];
-      peopleList.innerHTML = "";
       snapshot.forEach(child => {
         const id = child.key;
         const data = child.val();
-        allPeople.push({id, ...data});
+        allPeople.push({ id, ...data });
       });
+      shuffleArray(allPeople);
       renderPeople(allPeople);
     });
 
-    // Hàm hiển thị
     function renderPeople(list){
       peopleList.innerHTML = "";
       if(list.length === 0){
-        peopleList.innerHTML = "<p class='empty'>😕 Không có ai trong danh sách</p>";
+        peopleList.innerHTML = "<p class='empty'> Không có ai trong danh sách</p>";
         return;
       }
       list.forEach(person => {
         const card = document.createElement('div');
         card.className = "person-card";
         card.innerHTML = `
-          <img src="${person.avatar || 'https://placehold.co/150x150?text=No+Avatar'}" alt="avatar">
+          <img src="${person.avatar || 'https://placehold.co/300x300?text=No+Avatar'}" alt="avatar">
           <div class="info">
             <h3>${person.name || 'Chưa rõ tên'}</h3>
-            <p>💬 ${person.relationship || 'Chưa rõ tình trạng'}</p>
-            <p>🏫 ${person.school || person.level || 'Chưa rõ nơi học/làm'}</p>
+            <p>🎂 ${person.dob || 'Chưa rõ ngày sinh'}</p>
             <a href="person.html?id=${person.id}" class="btnDetail">Xem chi tiết</a>
           </div>
         `;
@@ -71,18 +245,17 @@
       });
     }
 
-    // Tìm kiếm
     searchInput.addEventListener('input', () => {
       const keyword = searchInput.value.toLowerCase().trim();
       const filtered = allPeople.filter(p => 
         (p.name && p.name.toLowerCase().includes(keyword)) ||
         (p.relationship && p.relationship.toLowerCase().includes(keyword)) ||
         (p.school && p.school.toLowerCase().includes(keyword)) ||
-        (p.level && p.level.toLowerCase().includes(keyword))
+        (p.level && p.level.toLowerCase().includes(keyword)) ||
+        (p.dob && p.dob.toLowerCase().includes(keyword))
       );
       renderPeople(filtered);
     });
   </script>
 </body>
 </html>
-
