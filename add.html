@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="form-container">
-    <h1>📝 Đăng thông tin của bạn</h1>
+    <h1> Đăng thông tin của bạn</h1>
     <p class="desc">Thông tin bạn nhập sẽ hiển thị công khai trên trang chủ để mọi người có thể tra cứu.</p>
 
     <form id="addForm">
@@ -63,13 +63,20 @@
       <label for="fears">Nỗi sợ</label>
       <input type="text" id="fears" placeholder="VD: Bóng tối, độ cao, ...">
 
+      <label>Mạng xã hội</label>
+<input type="text" id="webnet" placeholder="https://facebook.com/...">
+
       <label for="interests">Sở thích</label>
       <input type="text" id="interests" placeholder="VD: Chơi game, đọc sách, ...">
+
+      <label for="bio">Tiểu sử</label>
+<textarea id="bio" rows="3" placeholder="Nhập tiểu sử của bạn (tùy chọn)..."></textarea>
+
 
       <label for="avatar">Ảnh đại diện</label>
       <input type="file" id="avatar">
 
-      <button type="submit" class="btnPrimary">Đăng thông tin ✅</button>
+      <button type="submit" class="btnPrimary">Đăng thông tin </button>
     </form>
 
     <p style="text-align:center;margin-top:20px;">
@@ -107,6 +114,7 @@
         phone: document.getElementById('phone').value,
         skills: document.getElementById('skills').value,
         fears: document.getElementById('fears').value,
+         webnet: document.getElementById('webnet').value,
         interests: document.getElementById('interests').value,
         avatar: avatarUrl
       };
@@ -114,7 +122,7 @@
       const ref = firebase.database().ref('people').push();
       await ref.set(data);
 
-      alert('✅ Thêm thông tin thành công!');
+      alert(' Thêm thông tin thành công!');
       window.location.href = "index.html";
     });
   </script>

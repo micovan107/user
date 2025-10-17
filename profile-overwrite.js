@@ -81,9 +81,18 @@ function renderPerson(data) {
       <p><b>📞 SĐT:</b> ${escapeHtml(data.phone || 'Không có')}</p>
       <p><b>💑 Tình trạng:</b> ${escapeHtml(data.relationship || 'Chưa rõ')}</p>
       <p><b>🏫 Trường/Nơi làm việc:</b> ${escapeHtml(data.school || 'Chưa rõ')}</p>
+      <p><b>📚 Học lực:</b> ${escapeHtml(data.studyPower || 'Chưa rõ')}</p>
+
+      <p><b>🏡 Nơi ở hiện tại:</b> ${escapeHtml(data.address || 'Chưa rõ')}</p>
+
       <p><b>🧠 Năng lực:</b> ${escapeHtml(data.skills || 'Không có')}</p>
       <p><b>😨 Nỗi sợ:</b> ${escapeHtml(data.fears || 'Không có')}</p>
       <p><b>🎯 Sở thích:</b> ${escapeHtml(data.interests || 'Không có')}</p>
+                <p><b>🌐 Mạng xã hội:</b> ${
+  data.webnet 
+    ? `<a href="${escapeHtml(data.webnet)}" target="_blank" style="color:#4f46e5;">${escapeHtml(data.webnet)}</a>` 
+    : 'Chưa có'
+}</p>
       <p><b>📜 Tiểu sử:</b> ${escapeHtml(data.bio || 'Chưa có')}</p>
     </div>
     <a href="index.html" class="btn">⬅ Quay lại trang chủ</a>
@@ -104,11 +113,31 @@ function renderPerson(data) {
       </select>
       <label>Trường/Nơi làm việc</label>
       <input id="editSchool" type="text" value="${escapeAttr(data.school || '')}">
+      <label>Học lực</label>
+<select id="editStudyPower">
+  <option value="">-- Chọn --</option>
+  <option ${data.studyPower === 'Yếu' ? 'selected' : ''}>Yếu</option>
+  <option ${data.studyPower === 'Trung bình' ? 'selected' : ''}>Trung bình</option>
+  <option ${data.studyPower === 'Khá' ? 'selected' : ''}>Khá</option>
+  <option ${data.studyPower === 'Giỏi' ? 'selected' : ''}>Giỏi</option>
+  <option ${data.studyPower === 'Xuất sắc' ? 'selected' : ''}>Xuất sắc</option>
+</select>
+<label for="editAddress">Nơi ở hiện tại</label>
+<input type="text" id="editAddress" value="${escapeAttr(data.address || '')}">
+
+
       <label>Năng lực</label>
       <input id="editSkills" type="text" value="${escapeAttr(data.skills || '')}">
       <label>Nỗi sợ</label>
       <input id="editFears" type="text" value="${escapeAttr(data.fears || '')}">
+
+      <label>Mạng xã hội</label>
+<input id="editwebnet" type="text" value="${escapeAttr(data.webnet || '')}">
+
       <label>Sở thích</label>
+
+ 
+
       <input id="editInterests" type="text" value="${escapeAttr(data.interests || '')}">
       <label>Tiểu sử</label>
       <textarea id="editBio" rows="3">${escapeHtml(data.bio || '')}</textarea>
@@ -132,6 +161,11 @@ function renderPerson(data) {
       skills: document.getElementById('editSkills').value,
       fears: document.getElementById('editFears').value,
       interests: document.getElementById('editInterests').value,
+        webnet: document.getElementById('editwebnet').value, 
+studyPower: document.getElementById('editStudyPower').value,
+address: document.getElementById('editAddress').value,
+
+
       bio: document.getElementById('editBio').value
     };
     // ghi lên Firebase
